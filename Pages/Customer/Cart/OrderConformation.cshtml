@@ -1,0 +1,23 @@
+﻿@page
+@model AspNetCore.OrderConformationModel
+@{
+    ViewData["Title"] = "OrderConformation";
+}
+
+<div class="container" row>
+    <div class="col-12 text-center">
+        <h1 style="color:green" class="text-primary text-center">Order Placed Successfully</h1>
+
+        <h1 style="color:green" class="text-primary text-center">Your Order Number is  :  @Model.orderId </h1>
+
+        <br /><br />
+        <img src="~/images/lawn_leaf.jpg" width="65%" />
+
+    </div>
+    <div class="col-12 text-center" style="color:maroon">
+        <br />
+        Your order has been placed successfully<br />
+        Please make sure to arrive on time for hot delicious food!
+    </div>
+</div>
+
