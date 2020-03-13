@@ -68,10 +68,10 @@ namespace AspNetCore.Pages.Customer.Cart
             detailsCart.listCart = _unitOfWork.ShoppingCart.GetAll(c => c.ApplicationUserId == claim.Value).ToList();
 
             detailsCart.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
-            detailsCart.OrderHeader.OderDate = DateTime.Now;
+            detailsCart.OrderHeader.OrderDate = DateTime.Now;
             detailsCart.OrderHeader.UserId = claim.Value;
             detailsCart.OrderHeader.Status = SD.PaymentStatusPending;
-
+            //detailsCart.OrderHeader.ApplicationUser = claim.Value;
             detailsCart.OrderHeader.PickUpTime = Convert.ToDateTime(detailsCart.OrderHeader.PickUpDate.ToShortDateString() + " " + detailsCart.OrderHeader.PickUpTime.ToShortTimeString());
 
             List<OrderDetails> orderDetailsList = new List<OrderDetails>();
@@ -83,18 +83,20 @@ namespace AspNetCore.Pages.Customer.Cart
                 item.MenuItem = _unitOfWork.MenuItem.GetFirstORDefault(m => m.Id == item.MenuItemId);
                 OrderDetails orderDetails = new OrderDetails
                 {
+                    OrderId = detailsCart.OrderHeader.Id,
                     MenuItemId =item.MenuItemId,
-                    OrderId =item.Id,
-                    Description =item.MenuItem.Description,
+                    Count = item.Count,                   
                     Name=item.MenuItem.Name,
                     Price=item.MenuItem.Price,
-                    Count=item.Count
+                    Description = item.MenuItem.Description
                 };
 
                 detailsCart.OrderHeader.OrderTotal += (orderDetails.Count * orderDetails.Price);
                 _unitOfWork.OrderDetails.add(orderDetails);
-               
+              
             }
+
+            //detailsCart.OrderHeader.OrderTotal = Convert.ToDouble(String.Format("{0:##}", detailsCart.OrderHeader.OrderTotal));
             _unitOfWork.ShoppingCart.RemoveRange(detailsCart.listCart);
             HttpContext.Session.SetInt32(SD.ShoppingCart, 0);
             _unitOfWork.Save();

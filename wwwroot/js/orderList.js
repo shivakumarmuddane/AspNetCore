@@ -1,14 +1,25 @@
 ﻿var dataTable;
 
 $(document).ready(function () {
-    loadList();
+    var url = window.location.search;
+    if (url.includes("cancelled")) {
+        loadList("cancelled");
+    }
+    else {
+        if (url.includes("completed")) {
+            loadList("completed");
+        }
+        else {
+            loadList("");
+        }
+    }
 
 })
 
-function loadList() {
+function loadList(param) {
     dataTable = $('#DT_load').DataTable({
         "ajax": {
-            "url": "/api/order",
+            "url": "/api/Order?status="+ param,
             "type": "GET",
             "datatype": "json"
         },
@@ -18,8 +29,9 @@ function loadList() {
             { "data": "orderHeader.applicationUser.email", "width": "20%" },
             { "data": "orderHeader.orderTotal", "width": "20%" },
             {
-                "data": "id",
+                "data": "orderHeader.id",
                 "render": function (data) {
+                    
                     return ` <div class="text-center">
                                        <a href="/Admin/Order/OrderDetails?id=${data}" class="btn btn-success text-white editClick" style="cursor:pointer; width:100px;">
                                            <i class="far fa-edit"></i> Details

@@ -5,7 +5,9 @@
 @{
     ViewData["Title"] = "Summary";
 }
+<script src="~/js/checkout.js">
 
+</script>
 <form method="post">
     <br />
     @if (Model.detailsCart.listCart.Count > 0)
@@ -115,9 +117,10 @@
                                 @{ 
                                     var OrderTotalStripe = Model.detailsCart.OrderHeader.OrderTotal * 100;
                                 }
-                                <script src="https://checkout.stripe.com/checkout.js"
+                                <script  src="~/js/checkout.js">
                                         class="stripe-button"
                                         data-key="@Stripe.Value.Publishablekey"
+                                        data-currency="INR"
                                         data-amount="@OrderTotalStripe"
                                         data-name="AspNet Core Test"
                                         data-lable="Place Order"

@@ -7,6 +7,7 @@ using AspNetCore.DataAccess.Data.Repository.IRepositoy;
 using AspNetCore.Models;
 using AspNetCore.Models.ViewModels;
 using AspNetCore.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +26,8 @@ namespace AspNetCore.Controllers
         }
 
         [HttpGet]
-        public IActionResult  Get()
+        [Authorize]
+        public IActionResult  Get(string status = null)
         {
             List<OrderDetailsViewModel> orderListVM = new List<OrderDetailsViewModel>();
             IEnumerable<OrderHeader> OrderHeaderList;
@@ -42,10 +44,26 @@ namespace AspNetCore.Controllers
             }
             else
             {
-                OrderHeaderList = _unitOfWork.OrderHeader.GetAll(null, null, "ApplicationUser");
+              OrderHeaderList = _unitOfWork.OrderHeader.GetAll(null, null, "ApplicationUser");
             }
 
-            foreach(OrderHeader item in OrderHeaderList)
+            if(status == "cancelled")
+            {
+                OrderHeaderList = OrderHeaderList.Where(o => o.Status == SD.StatusCancelled || o.Status == SD.StatusRefunded || o.Status == SD.PaymentStatusRejected);
+            }
+            else
+            {
+                if(status == "completed")
+                {
+                    OrderHeaderList = OrderHeaderList.Where(u => u.Status == SD.StatusCompleted );
+                }
+                else
+                {
+                    OrderHeaderList = OrderHeaderList.Where(u => u.Status == SD.StatusInprogress || u.Status == SD.StatusReady || u.Status == SD.StatusSubmited || u.Status == SD.PaymentStatusPending);
+                }
+            }
+
+            foreach (OrderHeader item in OrderHeaderList)
             {
                 OrderDetailsViewModel individual = new OrderDetailsViewModel
                 {
@@ -57,6 +75,8 @@ namespace AspNetCore.Controllers
             }
 
             return Json(new { data = orderListVM });
+
+           
         }
     }
 }

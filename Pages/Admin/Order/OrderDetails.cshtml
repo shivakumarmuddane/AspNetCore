@@ -1,0 +1,137 @@
+﻿@page
+@model AspNetCore.OrderDetailsModel
+@using AspNetCore.Utility
+@{
+    ViewData["Title"] = "OrderDetails";
+}
+
+@*<h1>OrderDetails</h1>*@
+
+
+
+<form method="post">
+    <div class="border ml-1 backgroundWhite mt-4">
+        <div class="row pb-1">
+            <div class="col-12 col-md-6 ">
+                <p class="h2  text-primary">Order Details</p>
+            </div>
+            <div class="col-12 col-md-4 offset-md-2">
+                <a asp-page="/Admin/Order/OrderList" class="btn btn-success form-control">Back to Orders </a>
+            </div>
+        </div>
+        <hr />
+
+        <div class="row pt-2">
+
+            <div class="col-lg-8 col-12" style="border-right:1px solid #bbb9b9">
+                <input type="hidden" asp-for="orderDetailsVM.OrderHeader.Id" />
+                <div class="form-group row">
+                    <div class="col-md-3 col-12 text-primary">
+                        <label><label asp-for="orderDetailsVM.OrderHeader.PickupName"></label></label>
+                    </div>
+                    <div class="col-md-9 col-12">
+                        <input asp-for="orderDetailsVM.OrderHeader.PickupName" disabled class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-3 col-12 text-primary">
+                        <label><label asp-for="orderDetailsVM.OrderHeader.ApplicationUser.Email"></label></label>
+                    </div>
+                    <div class="col-md-9 col-12">
+                        <input asp-for="orderDetailsVM.OrderHeader.ApplicationUser.Email" disabled class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-3 col-12 text-primary">
+                        <label><label asp-for="orderDetailsVM.OrderHeader.ApplicationUser.PhoneNumber"></label></label>
+                    </div>
+                    <div class="col-md-9 col-12">
+                        <input asp-for="orderDetailsVM.OrderHeader.ApplicationUser.PhoneNumber" disabled class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-3 col-12 text-primary">
+                        <label><label asp-for="orderDetailsVM.OrderHeader.OrderTotal"></label></label>
+                    </div>
+                    <div class="col-md-9 col-12">
+                        <input asp-for="@Model.orderDetailsVM.OrderHeader.OrderTotal" disabled class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-3 col-12 text-primary">
+                        <label><label asp-for="orderDetailsVM.OrderHeader.OrderDate"></label></label>
+                    </div>
+                    <div class="col-md-9 col-12">
+                        <input value="@Model.orderDetailsVM.OrderHeader.PickUpTime.ToShortDateString() @Model.orderDetailsVM.OrderHeader.PickUpTime.ToShortTimeString()" disabled class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-3 col-12 text-primary">
+                        <label><label asp-for="orderDetailsVM.OrderHeader.Comments"></label></label>
+                    </div>
+                    <div class="col-md-9 col-12">
+                        <textarea asp-for="orderDetailsVM.OrderHeader.Comments" disabled class="form-control" style="width:100%;height:75px;"></textarea>
+                        @*<input asp-for="orderDetailsVM.OrderHeader.Comments" disabled class="form-control" />*@
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div class="col-lg-4 col-12">
+                <h4 class="d-flex justify-content-between align-content-center mb-3">
+                    <span class="text-muted">Order ID: </span>
+                    <span class="badge badge-secondary badge-pill">@Model.orderDetailsVM.OrderHeader.Id</span>
+                </h4>
+                <ul class="list-group mb-3">
+                    @foreach (var details in Model.orderDetailsVM.OrderDetails)
+                    {
+                        <li class="list-group-item d-flex justify-content-between">
+                            <div>
+                                <h6 class="my-0">@details.Name</h6>
+                                <small class="text-muted">Quantity : @details.Count</small>
+                            </div>
+                            <span class="text-muted">₹@(details.Price * details.Count)</span>
+                        </li>
+                    }
+                    <li class="list-group-item d-flex justify-content-between bg-light">
+                        <span class="text-info"> Total (INR)</span>
+                        <strong class="text-info"> ₹@Model.orderDetailsVM.OrderHeader.OrderTotal</strong>
+                    </li>
+
+                </ul>
+
+                @if (Model.orderDetailsVM.OrderHeader.Status.Equals(SD.StatusReady) && (User.IsInRole(SD.ManagerRole) || User.IsInRole(SD.FrontDeskRole)))
+                {
+                    <button type="submit" class="btn btn-success form-control" asp-page-handler="OrderConfirm" asp-route-OrderId="@Model.orderDetailsVM.OrderHeader.Id"><i class="far fa-thumbs-up"></i> Confirm Pickup</button>
+                }
+                else
+                {
+                    <button type="submit" disabled class="btn btn-info form-control">@Model.orderDetailsVM.OrderHeader.Status </button>
+                }
+                @if ((User.IsInRole(SD.ManagerRole) || User.IsInRole(SD.FrontDeskRole)) &&
+                    (Model.orderDetailsVM.OrderHeader.Status.Equals(SD.StatusSubmited) ||
+                    Model.orderDetailsVM.OrderHeader.Status.Equals(SD.StatusReady) ||
+                    Model.orderDetailsVM.OrderHeader.Status.Equals(SD.StatusInprogress)))
+                {
+                    <div class="row pt-1">
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-warning form-control" asp-page-handler="OrderCancel" asp-route-OrderId="@Model.orderDetailsVM.OrderHeader.Id"> <i class="fas fa-times"></i> Cancel Order</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-danger form-control" asp-page-handler="OrderRefund" asp-route-OrderId="@Model.orderDetailsVM.OrderHeader.Id"> <i class="fas fa-times"></i> Refund Order</button>
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    </div>
+</form>

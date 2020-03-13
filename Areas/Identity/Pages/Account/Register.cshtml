@@ -12,7 +12,17 @@
             <div class="col-8 offset-2">
                 <div class="card">
                     <div class="card-body" px-lg-5 pt-4>
-                        <h3 class="col-12 text-success text-center py-4"><strong>Sign Up</strong></h3>
+                        <h3 class="col-12 text-success text-center py-4">
+                            @if (User.IsInRole(SD.ManagerRole))
+                            { 
+                                <strong>Register an Employee </strong>
+                            }
+                            else
+                            {
+                            <strong>Sign Up</strong>
+                            }
+
+                        </h3>
                         <hr />
                         <div class="form-row py-2">
                             <div class="col">
@@ -48,12 +58,15 @@
                             <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                         </div>
 
-                        <div class="py-2">
-                            <input type="radio" name="rdUserRole" value="@SD.KitchenRole" />@SD.KitchenRole &nbsp;
-                            <input type="radio" name="rdUserRole" value="@SD.FrontDeskRole" />@SD.FrontDeskRole &nbsp;
-                            <input type="radio" name="rdUserRole" value="@SD.ManagerRole" />@SD.ManagerRole &nbsp;
-                            <input type="radio" name="rdUserRole" value="@SD.CustomerRole" />@SD.CustomerRole &nbsp;
-                        </div>
+                        @if (User.IsInRole(SD.ManagerRole))
+                        {
+                            <div class="py-2">
+                                <input type="radio" name="rdUserRole" value="@SD.KitchenRole" />@SD.KitchenRole &nbsp;
+                                <input type="radio" name="rdUserRole" value="@SD.FrontDeskRole" />@SD.FrontDeskRole &nbsp;
+                                <input type="radio" name="rdUserRole" value="@SD.ManagerRole" />@SD.ManagerRole &nbsp;
+                                @*<input type="radio" name="rdUserRole" value="@SD.CustomerRole" />@SD.CustomerRole &nbsp;*@
+                            </div>
+                        }
                         <div class="py-2">
                             <button type="submit" class="btn btn-success form-control">Register</button>
 
@@ -62,7 +75,7 @@
                         <p>
                             By clicking <em>Register</em> you agree to our<a href="" target="_blank"> terms of service</a>
                         </p>
-                    </div> 
+                    </div>
                 </div>
             </div>
         </div>
@@ -73,7 +86,7 @@
 
 <div class="row">
     <div class="col-md-4">
-      
+
     </div>
     <div class="col-md-6 col-md-offset-2">
         <section>
