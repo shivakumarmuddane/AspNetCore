@@ -17,6 +17,7 @@ using AspNetCore.DataAccess.Data.Repository;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using AspNetCore.Utility;
 using Stripe;
+using AspNetCore.DataAccess.Data.Initializer;
 
 namespace AspNetCore
 {
@@ -42,7 +43,7 @@ namespace AspNetCore
             services.AddSingleton<IEmailSender, EmailSender>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-
+            services.AddTransient<IdbInitializer, DbInitializer>();
 
             //services.AddRazorPages(options => options.RootDirectory= "/Identity");
 
@@ -50,7 +51,7 @@ namespace AspNetCore
             //services.AddMvc(options => options.EnableEndpointRouting = false)
             //    .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_3_0);
 
-           // Endpoint routing using razor page
+            // Endpoint routing using razor page
             services.AddRazorPages();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
@@ -75,7 +76,7 @@ namespace AspNetCore
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IdbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -94,7 +95,7 @@ namespace AspNetCore
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
-
+            dbInitializer.Initialize();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
