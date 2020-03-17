@@ -35,7 +35,7 @@ namespace AspNetCore
                 OrderDetailsViewModel individual = new OrderDetailsViewModel
                 {
                     OrderHeader = item,
-                    OrderDetails = _unitOfWork.OrderDetails.GetAll(o => o.OrderId == item.Id).ToList()
+                    OrderDetails = _unitOfWork.OrderDetails.GetAll(o => o.OrderHeaderId == item.Id).ToList()
                 };
                 orderDetailsVM.Add(individual);
             }

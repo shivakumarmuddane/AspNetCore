@@ -27,7 +27,7 @@ namespace AspNetCore
             orderDetailsVM = new OrderDetailsViewModel()
             {
                 OrderHeader = _unitOfWork.OrderHeader.GetFirstORDefault(u => u.Id == id),
-                OrderDetails = _unitOfWork.OrderDetails.GetAll(m => m.OrderId == id).ToList()
+                OrderDetails = _unitOfWork.OrderDetails.GetAll(m => m.OrderHeaderId == id).ToList()
             };
             orderDetailsVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.GetFirstORDefault(u => u.Id == orderDetailsVM.OrderHeader.UserId);
         }

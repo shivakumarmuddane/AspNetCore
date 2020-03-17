@@ -83,7 +83,7 @@ namespace AspNetCore.Pages.Customer.Cart
                 item.MenuItem = _unitOfWork.MenuItem.GetFirstORDefault(m => m.Id == item.MenuItemId);
                 OrderDetails orderDetails = new OrderDetails
                 {
-                    OrderId = detailsCart.OrderHeader.Id,
+                    OrderHeaderId = detailsCart.OrderHeader.Id,
                     MenuItemId =item.MenuItemId,
                     Count = item.Count,                   
                     Name=item.MenuItem.Name,
